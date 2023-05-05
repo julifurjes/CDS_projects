@@ -1,0 +1,6 @@
+numpy
+pandas
+nltk
+scikit-learn
+
+# pip install pipreqs - automatically creates a requirements file
