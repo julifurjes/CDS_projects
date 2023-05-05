@@ -12,6 +12,9 @@ from sklearn.model_selection import train_test_split, ShuffleSplit
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import OneHotEncoder
 from sklearn import metrics
+from nrclex import NRCLex
+from transformers import pipeline
+import tensorflow
 nltk.download('stopwords')
 nlp = spacy.load('en_core_web_sm')
 
@@ -78,10 +81,55 @@ def classifying(X_train_feats, X_test_feats, y_train, y_test):
     f.close() # closing the txt file
     return classifier, y_pred
 
+def emotion_class(data):
+    classifier = pipeline("text-classification",model='bhadresh-savani/distilbert-base-uncased-emotion', return_all_scores=True)
+    i = 0
+    for post in data['cleaned_text']:
+        prediction = classifier(post)
+        # creating an empty list for each emotion
+        anger = disgust = fear = joy = neutral = sadness = surprise = [0]
+        anger = prediction[0].get("score")
+        disgust = prediction[1].get("score")
+        fear = prediction[2].get("score")
+        joy = prediction[3].get("score")
+        neutral = prediction[4].get("score")
+        sadness = prediction[5].get("score")
+        surprise = prediction[6].get("score")
+        emotions = {anger:"anger",disgust:"disgust",fear:"fear",joy:"joy",neutral:"neutral",sadness:"sadness",surprise:"surprise"}
+        data['top_emotion'].iloc[i] = emotions.get(max(emotions))
+        i = i + 1
+        print(data)
+        return data
+
+def emotion_class(data):
+    classifier = pipeline("text-classification",model='bhadresh-savani/distilbert-base-uncased-emotion', return_all_scores=True)
+    posts_list = data['cleaned_text'].astype(str).values.tolist()
+    anger = disgust = fear = joy = neutral = sadness = surprise = [0] * len(posts_list)
+    prediction = classifier(posts_list)
+    # creating an empty list for each emotion
+    for i in range(len(posts_list)): # saving the scores
+        anger[i] = preds[i][0].get("score")
+        disgust[i] = preds[i][1].get("score")
+        fear[i] = preds[i][2].get("score")
+        joy[i] = preds[i][3].get("score")
+        neutral[i] = preds[i][4].get("score")
+        sadness[i] = preds[i][5].get("score")
+        surprise[i] = preds[i][6].get("score")
+        emotions = {anger[i]:"anger",disgust[i]:"disgust",fear[i]:"fear",joy[i]:"joy",neutral[i]:"neutral",sadness[i]:"sadness",surprise[i]:"surprise"}
+        data['top_emotion'].iloc[i] = emotions.get(max(emotions))    
+    print(data)
+    return data
+
+def make_plot(data):
+    sns.countplot(x=data['top_emotion']) # saving all titles
+    plt.savefig('out/all_types.png') # saving the output
+
 def main():
     data, X, y = prep_data()
     X_train, X_test, y_train, y_test = splitting_data(X, y)
     vectorizer, X_train_feats, X_test_feats = vectorizing(X_train, X_test)
     classifier, y_pred = classifying(X_train_feats, X_test_feats, y_train, y_test)
+    data = emotion_class(data)
+    make_plot(data)
 
 main()

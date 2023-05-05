@@ -2,5 +2,8 @@ numpy
 pandas
 nltk
 scikit-learn
+NRCLex
+transformers
+tensorflow
 
 # pip install pipreqs - automatically creates a requirements file
