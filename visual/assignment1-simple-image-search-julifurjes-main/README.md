@@ -10,7 +10,7 @@ In this assignment, I have used ```OpenCV``` to design a simple image search alg
 - The ```archive``` folder contains the older version of the script, in a Jupyter Notebook format.
 - The five most similar images aand the distance metrics are saved in the ```out``` folder, in the following format:
 
-|Filename|Distance]
+|Filename|Distance|
 |---|---|
 |target|0.0|
 |filename1|---|
