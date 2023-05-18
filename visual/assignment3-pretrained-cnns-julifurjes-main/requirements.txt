@@ -1,0 +1,12 @@
+matplotlib
+numpy
+pandas 
+tqdm
+matplotlib
+scikit-learn
+tensorflow-cpu
+tensorflow-hub
+tensorflow
+zipfile36
+category_encoders
+pillow
