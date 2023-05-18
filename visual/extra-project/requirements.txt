@@ -1,0 +1,11 @@
+matplotlib
+numpy
+pandas 
+random2
+matplotlib
+scikit-learn
+tensorflow-cpu
+tensorflow-hub
+tensorflow
+zipfile36
+shutil
