@@ -8,12 +8,14 @@ In this assignment, I have used ```OpenCV``` to design a simple image search alg
 
 - In the ```src``` folder you can find the script, in a ```.py``` format.
 - The ```archive``` folder contains the older version of the script, in a Jupyter Notebook format.
-- The five most similar images aand the distance metrics are saved in the ```out``` folder, inn the following format:
+- The five most similar images aand the distance metrics are saved in the ```out``` folder, in the following format:
+
 |Filename|Distance]
 |---|---|
 |target|0.0|
 |filename1|---|
 |filename2|---|
+
 - The data is available in the ```flowers``` folder or via [this link](https://www.robots.ox.ac.uk/~vgg/data/flowers/17/). It is a collection of over 1000 images of flowers, sampled from 17 different species.
 - The ```setup.sh``` file includes everything to run the installments.
 - The ```run.sh``` file includes everything to run the script.
