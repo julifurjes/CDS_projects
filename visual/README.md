@@ -6,4 +6,4 @@ In this folder you can find all three visual assignments and the extra project:
 3. Assignment 3: Pretrained CNNs
 4. Extra Project
 
-You can reada more about the assignments, the datasets and how to run the scripts in the corresponding folders.
+You can read more about the assignments, the datasets and how to run the scripts in the corresponding folders.
