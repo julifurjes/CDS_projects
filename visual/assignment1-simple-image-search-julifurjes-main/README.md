@@ -62,3 +62,10 @@ Make sure that you have all the files in your cloned folder and that your ```flo
 ## Results
 
 The output file called ```top_five.csv``` contains the five most resembling pictures to the randomly chosen flower picture.
+And the five most resembling picturess to ```image_0013.jpg``` are:
+	Filename	Distance
+0	image_0532.jpg	490.44
+1	image_0481.jpg	493.58
+2	image_1264.jpg	509.38
+3	image_0189.jpg	509.6
+4	image_0690.jpg	510.57
