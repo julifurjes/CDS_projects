@@ -1,4 +1,4 @@
-# Extra Assignment
+# Extra Assignment - Image classifier on Santa pictures
 
 ## About the assignment
 
