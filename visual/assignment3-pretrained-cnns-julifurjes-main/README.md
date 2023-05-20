@@ -2,6 +2,16 @@
 
 ## Task description
 
+In the previous assignments involving classification, we were performing a kind of simple feature extraction on images by making them greyscale and flattening them to a single vector. This vector of pixel values was then used as the input for some kind of classification model.
+
+For this assignment, we're going to be working with an interesting kind of cultural phenomenon - fashion. On UCloud, you have access to a dataset of *Indo fashion* taken from this [Kaggle dataset](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset). There is a paper which goes along with it on *arXiv.org*, which you can read [here](https://arxiv.org/abs/2104.02830).
+
+Your instructions for this assignment are short and simple:
+
+- You should write code which trains a classifier on this dataset using a *pretrained CNN like VGG16*
+- Save the training and validation history plots
+- Save the classification report
+
 ## Methods
 
 In this assignment, I have trained a classifier on an Indo fashion dataset using a *pretrained CNN like VGG16*. The dataset is not included in the repository, due to its great size, but it can be downloaded from [here](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset). It  consists of 106K images and 15 unique cloth categories. There is a paper which goes along with it on *arXiv.org*, which you can read [here](https://arxiv.org/abs/2104.02830).
