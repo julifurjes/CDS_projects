@@ -25,8 +25,8 @@ For this exercise, you should write some code which does the following:
 This assignment is designed to test that you can:
 
 1. Work with larger datasets of images
-2. Extract structured information from image data using OpenCV
-3. Quantaitively compare images based on these features, performing distant viewing
+2. Extract structured information from image data using ```OpenCV```
+3. Quantaitively compare images based on these features, performing *distant viewing*
 
 ## Methods
 
