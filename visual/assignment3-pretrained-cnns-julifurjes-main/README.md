@@ -1,6 +1,8 @@
 # Assignment 3: Using pretrained CNNs for image classification
 
-## About the assignment
+## Task description
+
+## Methods
 
 In this assignment, I have trained a classifier on an Indo fashion dataset using a *pretrained CNN like VGG16*. The dataset is not included in the repository, due to its great size, but it can be downloaded from [here](https://www.kaggle.com/datasets/validmodel/indo-fashion-dataset). It  consists of 106K images and 15 unique cloth categories. There is a paper which goes along with it on *arXiv.org*, which you can read [here](https://arxiv.org/abs/2104.02830).
 
@@ -17,4 +19,8 @@ Furthermore, only limited datapoints were used for the training, due to time eff
 - The ```run.sh``` file includes everything to run the script.
 
 ## How to run it
-First write ```bash setup.sh``` in the terminal to install the requirements and virtual environment, and run ```bash run.sh``` to run the script.
+
+1. Clone this reepository on your own device
+2. Open Terminal at this folder or type ```cd assignment1-simple-image-search-julifurjes-main```
+3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
+4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
