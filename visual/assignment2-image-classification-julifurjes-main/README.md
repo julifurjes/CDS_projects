@@ -19,7 +19,7 @@ The purpose of this assignment is:
 - To demonstrate that you can build reproducible pipelines for machine learning projects
 - To make sure that you can structure repos appropriately
 
-## Methods
+## Methods
 
 In this assignment, I have used ```OpenCV``` to design a simple image search algorithm. First I have randomly chosen an image I'd like to work with. Then a colour histogram was extracted using ```OpenCV``` for that imgae first and then for the rest of the images. Then histogramss were compared and the five most similar images were chosen.
 
