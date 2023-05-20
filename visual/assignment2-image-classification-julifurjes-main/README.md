@@ -30,10 +30,11 @@ In this assignment, I have classified the ```Cifar10``` dataset by first loading
 
 ## File structure
 
-- In the ```src``` folder you can find the above mentioned three scripts:
-  - ```vectorizer_file.py```
+- In the ```src``` folder you can find two of the above mentioned three scripts:
   - ```log_regression.py```
   - ```neural_network.py```
+- In the ```utils``` folder you can find the last script:
+  - ```preprocessing2.py```
 - The classifiers are saved in the ```out``` folder.
 - The models are saved in the ```models``` folder.
 - The vectorizer script is stored in the ```utils``` folder.
@@ -46,3 +47,7 @@ In this assignment, I have classified the ```Cifar10``` dataset by first loading
 2. Open Terminal at this folder or type ```cd assignment2-image-classification-julifurjes-main```
 3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
 4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
+
+## Results
+
+You can find the classifier reports from the models in the ```out``` folder.
