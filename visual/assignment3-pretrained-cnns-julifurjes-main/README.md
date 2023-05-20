@@ -30,10 +30,11 @@ Furthermore, only limited datapoints were used for the training, due to time eff
 
 ## How to run it
 
-1. Clone this reepository on your own device
-2. Open Terminal at this folder or type ```cd assignment1-simple-image-search-julifurjes-main```
-3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
-4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
+1. Clone this repository on your own device
+2. Download the dataset and place it in the repository
+3. Open Terminal at this folder or type ```cd assignment1-simple-image-search-julifurjes-main```
+4. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
+5. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
 
 ## Notes
 
