@@ -34,3 +34,29 @@ Furthermore, only limited datapoints were used for the training, due to time eff
 2. Open Terminal at this folder or type ```cd assignment1-simple-image-search-julifurjes-main```
 3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
 4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
+
+## Results
+
+The output called ```classification_report.txt``` gave the following report:
+
+|                     | precision  |  recall | f1-score |  support|
+| --- | --- | --- | --- | --- |
+             | blouse      | 0.86     | 0.64     | 0.73       | 28|
+       |  dhoti_pants      | 0.74     | 0.46     | 0.57       | 37|
+       |     dupattas      | 0.41     | 0.50     | 0.45       | 24|
+       |        gowns      | 0.52     | 0.37     | 0.43       | 30|
+       |    kurta_men      | 0.40     | 0.68     | 0.51       | 31|
+| leggings_and_salwars     | 0.71     | 0.59     | 0.65       | 37|
+            | lehenga      | 0.76     | 0.70     | 0.73       | 27|
+        | mojaris_men      | 0.73     | 0.73     | 0.73       | 33|
+     |  mojaris_women      | 0.71     | 0.67     | 0.69       | 36|
+      | nehru_jackets      | 0.65     | 0.74     | 0.69       | 27|
+         |   palazzos      | 0.84     | 0.64     | 0.73       | 42|
+         | petticoats      | 0.64     | 0.69     | 0.67       | 42|
+          |     saree      | 0.56     | 0.91     | 0.69       | 33|
+         |  sherwanis      | 0.64     | 0.16     | 0.25       | 45|
+       |  women_kurta      | 0.34     | 0.71     | 0.47       | 28|
+
+       |     accuracy   |           |         |    0.60   |    500|
+       |    macro avg   |    0.63   |   0.61  |    0.60   |    500|
+       | weighted avg   |    0.64   |   0.60  |    0.60   |    500|
