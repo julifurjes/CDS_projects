@@ -35,6 +35,10 @@ Furthermore, only limited datapoints were used for the training, due to time eff
 3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
 4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
 
+## Notes
+
+Make sure that you have downloaded the data from the above mentioned link and eithere upload it in the compressed format, or upload the unzipped format and put it in a folder called 'data'.
+
 ## Results
 
 You can find the classification report in the ```out``` folder, along with the training and validation history plots.
