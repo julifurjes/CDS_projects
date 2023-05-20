@@ -17,6 +17,10 @@ NB 2: For some reason the user input classification sometimes works perfectly, a
 - The ```setup.sh``` file includes everything to run the installments.
 - The ```run.sh``` file includes everything to run the script.
 
+## Notes
+
+Make sure that you have downloaded the data from the above mentioned link and eithere upload it in the compressed format, or upload the unzipped format and with its original folder name ('is that santa').
+
 ## How to run it
 
 1. Clone this repository on your own device
