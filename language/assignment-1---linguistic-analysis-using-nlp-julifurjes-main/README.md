@@ -34,7 +34,7 @@ This assignment is designed to test that you can:
 ## How to run it
 
 1. Clone this repository on your own device
-2. Open Terminal at this folder or type ```cd assignment1-simple-image-search-julifurjes-main```
+2. Open Terminal at this folder or type ```cd assignment-1---linguistic-analysis-using-nlp-julifurjes-main```
 3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
 4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
 
