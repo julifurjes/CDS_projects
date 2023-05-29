@@ -29,10 +29,6 @@ This assignment is designed to test that you can:
 - The ```run.sh``` file includes everything to run the script.
 
 ## How to run it
-First write ```bash setup.sh``` in the terminal to install the requirements and virtual environment, and run ```bash run.sh``` to run the script.
-=======
-
-## How to run it
 
 1. Clone this repository on your own device
 2. Open Terminal at this folder or type ```cd assignment-2---text-classification-julifurjes```
