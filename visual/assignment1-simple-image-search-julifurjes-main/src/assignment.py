@@ -76,10 +76,12 @@ def compare_hist(directory, hist_mainpic):
     return hist_all
 
 def five_images(hist_all):
-    top_five = hist_all.nlargest(5, 'Histogram_diff')
+    top_five = hist_all.nsmallest(6, 'Histogram_diff') # taking the six closest ones
+    top_five = top_five[1:] # removing the very first one, since its the chosen picture itself
     df_top_five = pd.DataFrame(columns = ['Filename', 'Distance']) # create an empty df
     df_top_five['Filename'] = top_five['Filename'] # assigning data to column
     df_top_five['Distance'] = top_five['Histogram_diff'] # assigning data to column
+    df_top_five = df_top_five.reset_index(drop=True) # reset indexing
     df_top_five.to_csv('out/top_five.csv') # saving it as a csv
 
 def main():

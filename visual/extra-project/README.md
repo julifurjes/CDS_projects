@@ -1,4 +1,4 @@
-# Extra Assignment
+# Extra Assignment - Image classifier on Santa pictures
 
 ## About the assignment
 
@@ -17,5 +17,14 @@ NB 2: For some reason the user input classification sometimes works perfectly, a
 - The ```setup.sh``` file includes everything to run the installments.
 - The ```run.sh``` file includes everything to run the script.
 
+## Notes
+
+Make sure that you have downloaded the data from the above mentioned link and eithere upload it in the compressed format, or upload the unzipped format and with its original folder name ('is that santa').
+
 ## How to run it
-First download the dataset from the above mentioned link. Then write ```bash setup.sh``` in the terminal to install the requirements and virtual environment, and run ```bash run.sh``` to run the script.
+
+1. Clone this repository on your own device
+2. Download dataset and place it in the repository
+3. Open Terminal at this folder or type ```cd extra-project```
+4. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
+5. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
