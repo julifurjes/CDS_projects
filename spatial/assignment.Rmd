@@ -1,0 +1,109 @@
+---
+title: "assignment"
+author: "Juli Furjes"
+output: html_document
+date: "2023-05-28"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+price data: https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads
+postcode data: https://www.doogal.co.uk/Counties?county=E11000019
+
+```{r}
+library(tidyverse)
+library(sf)
+library(spatstat)
+```
+
+
+```{r}
+crime_data <- read_csv("data/2023-03-west-yorkshire-street.csv")
+
+head(crime_data)
+
+crime_data <- crime_data[!is.na(crime_data$Longitude),]
+crime_data <- crime_data[!is.na(crime_data$Latitude),]
+
+crime_spatial <- st_as_sf(crime_data, coords = c("Longitude", "Latitude"), 
+                 crs = 4326, agr = "constant")
+
+housing_data <- read.csv("data/pp-monthly-update-new-version.csv", header=FALSE)
+housing_data <- housing_data[ , c("V2", "V3", "V4", "V14")]
+colnames(housing_data) <- c("price", "date", "postcode", "county")
+head(housing_data)
+
+counties <- unique(housing_data$county)
+sort(counties)
+
+housing_data <- subset(housing_data, county == 'WEST YORKSHIRE')
+housing_data
+
+postcodes <- read_csv("data/West Yorkshire postcodes.csv")
+postcodes <- postcodes[ , c("Postcode", "Latitude", "Longitude")]
+head(postcodes)
+
+names(postcodes)[names(postcodes) == "Postcode"] <- "postcode"
+
+housing_data <- merge(housing_data, postcodes, by="postcode")
+
+housing_spatial <- st_as_sf(housing_data, coords = c("Longitude", "Latitude"), 
+                 crs = 4326, agr = "constant")
+
+runway = gpd.GeoDataFrame(index=[0], 
+                          geometry=[LineString(zip(runway_coords['X (Easting)'], runway_coords['Y (Northing)']))],
+                          crs=crs)
+```
+
+```{r}
+ggplot() + 
+  geom_sf(data = housing_spatial) + 
+  geom_sf(data = crime_spatial) + 
+  theme(legend.position = "none",
+        panel.grid = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_blank(),
+        axis.ticks = element_blank(),
+        panel.background = element_blank()) 
+```
+
+```{r}
+housing_spatial <- st_transform(housing_spatial, 27700)
+window <- as.owin(housing_spatial)
+
+crime_spatial <- st_transform(crime_spatial, 27700)
+sf_crime_spatial_coords <- matrix(unlist(crime_spatial$geometry), ncol = 2, byrow = T)
+crime_ppp <- ppp(x = sf_crime_spatial_coords[,1], y = sf_crime_spatial_coords[,2],
+                   window = window, check = T)
+```
+
+
+```{r}
+library(spatstat)
+disc10 <- disc(radius = 10)
+
+# p_poisson 
+
+# Compute the rate as count divided by area
+lambda <- 300/area.owin(disc10)
+
+# Create a point pattern object
+p_poisson <- rpoispp(lambda = lambda, win = disc10)
+plot(p_poisson)
+
+# p_cluster and p_regular
+
+# Generate clustered points from a Thomas process
+set.seed(123)
+p_cluster <- rThomas(kappa = 0.35, scale = 1, mu = 3, win = disc10)
+plot(p_cluster)
+
+# Regular points from a Strauss process
+set.seed(123)
+p_regular <- rStrauss(beta = 2.9, gamma = 0.025, R = .5, W = disc10)
+plot(p_regular)
+```
+
+
