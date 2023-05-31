@@ -38,7 +38,7 @@ NB: I did not separate the posts, just removed the special characters, including
 ## How to run it
 
 1. Clone this repository on your own device
-2. Open Terminal at this folder or type ```cd assignment-4---using-finetuned-transformers-julifurjes-main```
+2. Open Terminal at this folder or type ```cd extra-project```
 3. Make sure that you have the data downloaded from [here](hhttps://www.kaggle.com/datasets/datasnaek/mbti-type) and located in a folder called ```data```
 4. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
 5. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
