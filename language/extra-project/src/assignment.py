@@ -15,6 +15,9 @@ from sklearn import metrics
 from nrclex import NRCLex
 from transformers import pipeline
 import tensorflow
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from joblib import dump, load
 nltk.download('stopwords')
 nlp = spacy.load('en_core_web_sm')
 
@@ -60,12 +63,9 @@ def vectorizing(X_train, X_test):
                              max_df = 0.95,           # remove very common words
                              min_df = 0.05,           # remove very rare words
                              max_features = 100)      # keep only top 100 features
-    # first we fit to the training data...
-    X_train_feats = vectorizer.fit_transform(X_train)
-    #... then do it for our test data
-    X_test_feats = vectorizer.transform(X_test)
-    # get feature names
-    feature_names = vectorizer.get_feature_names_out()
+    X_train_feats = vectorizer.fit_transform(X_train) # fitting to the training data
+    X_test_feats = vectorizer.transform(X_test) # fitting to the test data
+    feature_names = vectorizer.get_feature_names_out() # get feature names
     return vectorizer, X_train_feats, X_test_feats
 
 def classifying(X_train_feats, X_test_feats, y_train, y_test):
@@ -76,60 +76,30 @@ def classifying(X_train_feats, X_test_feats, y_train, y_test):
     classifier.fit(X_train_feats, y_train)
     y_pred = classifier.predict(X_test_feats)
     classifier_metrics = metrics.classification_report(y_test, y_pred)
-    f = open("out/neural_network_classifier.txt", "w") # creating a txt file
+    f = open("out/neural_network_classifier.txt", "w") # creating a txt file for the report
     f.write(classifier_metrics) # saving the classifier metrics as a txt file
     f.close() # closing the txt file
     return classifier, y_pred
 
-def emotion_class(data):
-    classifier = pipeline("text-classification",model='bhadresh-savani/distilbert-base-uncased-emotion', return_all_scores=True)
-    i = 0
-    for post in data['cleaned_text']:
-        prediction = classifier(post)
-        # creating an empty list for each emotion
-        anger = disgust = fear = joy = neutral = sadness = surprise = [0]
-        anger = prediction[0].get("score")
-        disgust = prediction[1].get("score")
-        fear = prediction[2].get("score")
-        joy = prediction[3].get("score")
-        neutral = prediction[4].get("score")
-        sadness = prediction[5].get("score")
-        surprise = prediction[6].get("score")
-        emotions = {anger:"anger",disgust:"disgust",fear:"fear",joy:"joy",neutral:"neutral",sadness:"sadness",surprise:"surprise"}
-        data['top_emotion'].iloc[i] = emotions.get(max(emotions))
-        i = i + 1
-        print(data)
-        return data
+def saving(vectorizer, classifier):
+    dump(classifier, "out/neural_classifier.joblib") # saving the classifier
+    dump(vectorizer, "out/tfidf_vectorizer.joblib") # saving the vectorizer
 
-def emotion_class(data):
-    classifier = pipeline("text-classification",model='bhadresh-savani/distilbert-base-uncased-emotion', return_all_scores=True)
-    posts_list = data['cleaned_text'].astype(str).values.tolist()
-    anger = disgust = fear = joy = neutral = sadness = surprise = [0] * len(posts_list)
-    prediction = classifier(posts_list)
-    # creating an empty list for each emotion
-    for i in range(len(posts_list)): # saving the scores
-        anger[i] = preds[i][0].get("score")
-        disgust[i] = preds[i][1].get("score")
-        fear[i] = preds[i][2].get("score")
-        joy[i] = preds[i][3].get("score")
-        neutral[i] = preds[i][4].get("score")
-        sadness[i] = preds[i][5].get("score")
-        surprise[i] = preds[i][6].get("score")
-        emotions = {anger[i]:"anger",disgust[i]:"disgust",fear[i]:"fear",joy[i]:"joy",neutral[i]:"neutral",sadness[i]:"sadness",surprise[i]:"surprise"}
-        data['top_emotion'].iloc[i] = emotions.get(max(emotions))    
-    print(data)
-    return data
-
-def make_plot(data):
-    sns.countplot(x=data['top_emotion']) # saving all titles
-    plt.savefig('out/all_types.png') # saving the output
+def loading():
+    loaded_clf = load("out/neural_classifier.joblib") # loading the classifier
+    loaded_vect = load("out/tfidf_vectorizer.joblib") # loaading the vectorizer
+    sentence = input("Enter a sentence: ") # asking for an input sentence
+    test_sentence = loaded_vect.transform([sentence]) # vectorising
+    pred = loaded_clf.predict(test_sentence) # predicting
+    print("PREDICTION: ", np.argmax(pred))
 
 def main():
-    data, X, y = prep_data()
-    X_train, X_test, y_train, y_test = splitting_data(X, y)
-    vectorizer, X_train_feats, X_test_feats = vectorizing(X_train, X_test)
-    classifier, y_pred = classifying(X_train_feats, X_test_feats, y_train, y_test)
-    data = emotion_class(data)
-    make_plot(data)
+    #data, X, y = prep_data()
+    #X_train, X_test, y_train, y_test = splitting_data(X, y)
+    #vectorizer, X_train_feats, X_test_feats = vectorizing(X_train, X_test)
+    #classifier, y_pred = classifying(X_train_feats, X_test_feats, y_train, y_test)
+    #saving(vectorizer, classifier)
+    loading()
 
-main()
+if __name__ == '__main__':
+    main()

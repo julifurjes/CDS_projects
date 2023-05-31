@@ -5,5 +5,8 @@ scikit-learn
 NRCLex
 transformers
 tensorflow
+matplotlib
+seaborn
+joblib
 
 # pip install pipreqs - automatically creates a requirements file
