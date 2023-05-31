@@ -21,12 +21,9 @@ Furthermore, only 1000 datapoints were used in the run, due to time efficiency i
 
 1. Clone this repository on your own device
 2. Open Terminal at this folder or type ```cd assignment-4---using-finetuned-transformers-julifurjes-main```
-3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
-4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
-
-## Notes
-
-Make sure that you have the data downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news) and located in a folder called ```data```.
+3. Make sure that you have the data downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news) and located in a folder called ```data```
+4. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
+5. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
 
 ## Results
 
