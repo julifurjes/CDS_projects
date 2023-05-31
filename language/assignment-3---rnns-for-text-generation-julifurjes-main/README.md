@@ -11,9 +11,11 @@ The code consists of three scripts:
 2. ```loading_model.py``` - this is where the model gets loaded and the text generated from the user prompt
 3. ```predefined_functions.py``` - this is where I store the functions that I do not define in the other scripts
 
-- Using TensorFlow to build complex deep learning models for NLP
-- Illustrating that you can structure repositories appropriately
-- Providing clear, easy-to-use documentation for your work.
+This assignment is designed to test that you can:
+
+- Use TensorFlow to build complex deep learning models for NLP
+- Illustrate that you can structure repositories appropriately
+- Provide clear, easy-to-use documentation for your work.
 
 NB: I only used 3000 datapoints and 5 epochs due to time efficiency and computer capacity. But this caan be easily changed by altering the epoch size and removing the sampling line.
 
