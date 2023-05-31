@@ -5,10 +5,10 @@
 In this assignment, I have trained a neural network classifier to predict personality types. I have decided to use the MBTI personality types as a dataset. The Myers-Briggs Type Indicator (MBTI) is a widely used personality assessment tool that is based on the theories of Swiss psychiatrist Carl Jung. It aims to classify individuals into different personality types, providing insights into their preferences, behaviors, and tendencies.
 
 The MBTI is grounded in Jung's theory of psychological types, which suggests that individuals possess innate preferences for how they perceive and interact with the world. According to Jung, there are four dichotomies that shape personality:
-a. Extraversion (E) - Introversion (I): Refers to the preferred focus of attention, either outward or inward.
-b. Sensing (S) - Intuition (N): Describes how individuals gather information, either through the five senses or through patterns and possibilities.
-c. Thinking (T) - Feeling (F): Reflects how individuals make decisions, either through logic and analysis or through values and emotions.
-d. Judging (J) - Perceiving (P): Captures how individuals approach the external world, either through organization and structure or through flexibility and spontaneity.
+1. Extraversion (E) - Introversion (I): Refers to the preferred focus of attention, either outward or inward.
+2. Sensing (S) - Intuition (N): Describes how individuals gather information, either through the five senses or through patterns and possibilities.
+3. Thinking (T) - Feeling (F): Reflects how individuals make decisions, either through logic and analysis or through values and emotions.
+4. Judging (J) - Perceiving (P): Captures how individuals approach the external world, either through organization and structure or through flexibility and spontaneity.
 
 Combining the preferences from each dichotomy results in a four-letter type. There are sixteen possible combinations, such as ISTJ, ENFP, or INFJ, each representing a unique personality type.
 
