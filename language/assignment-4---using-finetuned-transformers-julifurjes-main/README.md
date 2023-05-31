@@ -5,7 +5,7 @@
 In this assignment, I have extracted information from the Fake or Real News dataset and performed emotion classification.
 NB: The dataset is not uploaded due to its size, but can be downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news).For this purpose, a HuggingFace model was used, called ```j-hartmann/emotion-english-distilroberta-base```, what you can read more about [here](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base).
 
-Furthermore, only 1000 datapoints were used in the run, due to time efficiency issues. However, this can be easily changed by removing the indexing when defining the headlines and labels.
+NB: Only 1000 datapoints were used in the run, due to time efficiency issues. However, this can be easily changed by removing the indexing when defining the headlines and labels.
 
 ## File structure
 
