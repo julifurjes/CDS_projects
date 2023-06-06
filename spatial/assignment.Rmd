@@ -9,9 +9,6 @@ date: "2023-05-28"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-price data: https://www.gov.uk/government/statistical-data-sets/price-paid-data-downloads
-postcode data: https://www.doogal.co.uk/Counties?county=E11000019
-
 ```{r}
 library(tidyverse)
 library(sf)
@@ -163,7 +160,7 @@ center <- c(-1.858460, 53.716157)
 #   addTiles() %>%
 #   addProviderTiles("Esri.WorldImagery", 
 #                    options = providerTileOptions(opacity=0.5)) %>% 
-#   setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+#   setView(lng = center[1], lat = center[2], zoom = 12) %>% 
 #   addCircleMarkers(
 #     lat = crime_coord$lat,
 #     lng = crime_coord$lon,
@@ -174,7 +171,7 @@ leaflet() %>%
   addTiles() %>%
   addProviderTiles("Esri.WorldImagery", 
                    options = providerTileOptions(opacity=0.5)) %>% 
-  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  setView(lng = center[1], lat = center[2], zoom = 12) %>% 
   addCircleMarkers(
     lat = crime_coord$lat,
     lng = crime_coord$lon
@@ -213,7 +210,7 @@ crime_icon <- makeIcon(
 #   addTiles() %>%
 #   addProviderTiles("Esri.WorldImagery", 
 #                    options = providerTileOptions(opacity=0.5)) %>% 
-#   setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+#   setView(lng = center[1], lat = center[2], zoom = 12) %>% 
 #   addMarkers(
 #     lat = crime_coord$lat,
 #     lng = crime_coord$lon,
@@ -227,7 +224,7 @@ leaflet() %>%
   addTiles() %>%
   addProviderTiles("Esri.WorldImagery", 
                    options = providerTileOptions(opacity=0.5)) %>% 
-  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  setView(lng = center[1], lat = center[2], zoom = 12) %>% 
   addMarkers(
     lat = crime_coord$lat,
     lng = crime_coord$lon,
@@ -264,6 +261,8 @@ leafsync::sync(map_housing, map_crime)
 
 ## Calculating nearest neighbour
 
+### Prepare data
+
 ```{r}
 # creating three pricing groups
 for (i in 1:length(housing_data$price)) {
@@ -281,7 +280,7 @@ housing_med <- housing_data[housing_data$price_category == "medium",]
 housing_high <- housing_data[housing_data$price_category == "high",]
 
 #define the radius
-radius <- 10000  # Radius length
+radius <-  6000
 
 # create the window
 window <- disc(radius = radius, centre = center)
@@ -291,22 +290,52 @@ leaflet() %>%
   addTiles() %>%
   addProviderTiles("Esri.WorldImagery", 
                    options = providerTileOptions(opacity=0.5)) %>% 
-  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  setView(lng = center[1], lat = center[2], zoom = 12) %>% 
   addMarkers(
     lat = crime_coord$lat,
     lng = crime_coord$lon,
     icon = crime_icon
   ) %>%
   addAwesomeMarkers(housing_data$Longitude, housing_data$Latitude, icon = price_icons) %>%
-  addCircles(lng = center[1], lat = center[2], radius = radius) 
+  addCircles(lng = center[1], lat = center[2], radius = radius)
 
 # create ppp objects based on the window and house price categories
-crime_ppp <- ppp(x = crime_data$Longitude, y = crime_data$Latitude, window = window)
+crime_ppp <- ppp(x = crime_coord$lon, y = crime_coord$lat, window = window)
 lowprice_ppp <- ppp(x = housing_low$Longitude, y = housing_low$Latitude, window = window)
 medprice_ppp <- ppp(x = housing_med$Longitude, y = housing_med$Latitude, window = window)
 highprice_ppp <- ppp(x = housing_high$Longitude, y = housing_high$Latitude, window = window)
+```
 
-# calculate neaarest neighbour
+### Dealing with duplicates
+
+```{r}
+# checking for duplicates
+any(duplicated(crime_ppp))
+any(duplicated(lowprice_ppp))
+any(duplicated(medprice_ppp))
+any(duplicated(highprice_ppp))
+
+# as we can see, all of them contain duplicates, so we will fix all of them
+
+# adding some jittering
+crime_ppp <- rjitter(crime_ppp, retry=TRUE, nsim=1, drop=TRUE)
+lowprice_ppp <- rjitter(lowprice_ppp, retry=TRUE, nsim=1, drop=TRUE)
+medprice_ppp <- rjitter(medprice_ppp, retry=TRUE, nsim=1, drop=TRUE)
+highprice_ppp <- rjitter(highprice_ppp, retry=TRUE, nsim=1, drop=TRUE)
+
+# checking for duplicates (again)
+any(duplicated(crime_ppp))
+any(duplicated(lowprice_ppp))
+any(duplicated(medprice_ppp))
+any(duplicated(highprice_ppp))
+
+# now it's all false!
+```
+
+### Calculating
+
+```{r}
+# calculate nearest neighbour
 nndistances_low <- nndist(lowprice_ppp, crime_ppp)
 nndistances_med <- nndist(medprice_ppp, crime_ppp)
 nndistances_high <- nndist(highprice_ppp, crime_ppp)
