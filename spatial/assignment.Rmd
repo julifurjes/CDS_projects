@@ -16,94 +16,354 @@ postcode data: https://www.doogal.co.uk/Counties?county=E11000019
 library(tidyverse)
 library(sf)
 library(spatstat)
+library(ggplot2)
+library(sp)
+library(leaflet)
+library(geosphere)
+library(lubridate)
+library(hms)
+library(spdep)
+library(mapview)
 ```
 
+## Loading data
+
+### Cleaning data
 
 ```{r}
-crime_data <- read_csv("data/2023-03-west-yorkshire-street.csv")
+# CRIME DATA
 
+# reading csv
+crime_data <- read_csv("data/2023-03-west-yorkshire-street.csv")
 head(crime_data)
 
+# removing nas
 crime_data <- crime_data[!is.na(crime_data$Longitude),]
 crime_data <- crime_data[!is.na(crime_data$Latitude),]
 
-crime_spatial <- st_as_sf(crime_data, coords = c("Longitude", "Latitude"), 
-                 crs = 4326, agr = "constant")
+# HOUSING DATA
 
+# reading csv (without column names)
 housing_data <- read.csv("data/pp-monthly-update-new-version.csv", header=FALSE)
+
+# keeping only the columns we need
 housing_data <- housing_data[ , c("V2", "V3", "V4", "V14")]
+
+# renaming columns
 colnames(housing_data) <- c("price", "date", "postcode", "county")
 head(housing_data)
 
+# print all the counties
 counties <- unique(housing_data$county)
 sort(counties)
 
+# filter for West Yorkshire
 housing_data <- subset(housing_data, county == 'WEST YORKSHIRE')
 housing_data
 
+# add coordinates, based on the postcode
 postcodes <- read_csv("data/West Yorkshire postcodes.csv")
 postcodes <- postcodes[ , c("Postcode", "Latitude", "Longitude")]
 head(postcodes)
 
+# renaming column name, so it would match with the other one
 names(postcodes)[names(postcodes) == "Postcode"] <- "postcode"
 
+# merge dataframes
 housing_data <- merge(housing_data, postcodes, by="postcode")
+```
 
+### Visualizing the rates of the different types of crimes
+
+```{r}
+crime_rates <- crime_data %>% 
+  group_by(`Crime type`)  %>% 
+  summarise(total_count=n(),
+            .groups = 'drop')
+
+crime_rates
+
+crime_plot <- ggplot(data=crime_rates, aes(x=`Crime type`, y=total_count)) +
+  geom_bar(stat="identity", fill="slateblue", alpha=0.5) +
+    xlab("Crime type") +
+    ylab("Total count") +
+    theme_light() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1))
+crime_plot
+```
+
+### Filtering data
+
+```{r}
+# subsetting crime with drugs
+crime_data <- crime_data[crime_data$`Crime type` == "Drugs",]
+
+# subtracting only the year from the date
+housing_data$date <- substr(housing_data$date, 1, 4)
+
+# subtracting only the ones that were sold in 2023
+housing_data <- housing_data[housing_data$date > 2022,]
+
+# finding an area with not too much data to visualize
+housing_data$postal_area <- substr(housing_data$postcode, 1, 2)
+
+postal_rates <- housing_data %>% 
+  group_by(postal_area)  %>% 
+  summarise(total_count=n(),
+            .groups = 'drop')
+
+postal_rates
+
+crime_data$area <- gsub( " .*$", "", crime_data$`LSOA name`)
+
+crime_area_rates <- crime_data %>% 
+  group_by(area)  %>% 
+  summarise(total_count=n(),
+            .groups = 'drop')
+
+crime_area_rates
+
+# filtering for HX / Calderdale
+crime_data <- crime_data[crime_data$area == "Calderdale",]
+housing_data <- housing_data[housing_data$postal_area == "HX",]
+```
+
+
+### Converting to sf
+
+```{r}
 housing_spatial <- st_as_sf(housing_data, coords = c("Longitude", "Latitude"), 
                  crs = 4326, agr = "constant")
 
-runway = gpd.GeoDataFrame(index=[0], 
-                          geometry=[LineString(zip(runway_coords['X (Easting)'], runway_coords['Y (Northing)']))],
-                          crs=crs)
+crime_spatial <- st_as_sf(crime_data, coords = c("Longitude", "Latitude"), 
+                 crs = 4326, agr = "constant")
 ```
+
+### Create a dataframe from the coord of crimes and their center
 
 ```{r}
-ggplot() + 
-  geom_sf(data = housing_spatial) + 
-  geom_sf(data = crime_spatial) + 
-  theme(legend.position = "none",
-        panel.grid = element_blank(),
-        axis.title = element_blank(),
-        axis.text = element_blank(),
-        axis.ticks = element_blank(),
-        panel.background = element_blank()) 
+columns = c("lon","lat") 
+crime_coord = data.frame(crime_data$Longitude, crime_data$Latitude) 
+colnames(crime_coord) = columns
+
+crime_coord$lon <- as.numeric(as.character(crime_coord$lon))
+crime_coord$lat <- as.numeric(as.character(crime_coord$lat))
+
+# define the center of Calderdale
+center <- c(-1.858460, 53.716157)
 ```
+
+## Mapping data
+
+### Visualising crime locations
 
 ```{r}
-housing_spatial <- st_transform(housing_spatial, 27700)
-window <- as.owin(housing_spatial)
+# use this if you want the datapoints to be clustered
+# leaflet() %>%
+#   addTiles() %>%
+#   addProviderTiles("Esri.WorldImagery", 
+#                    options = providerTileOptions(opacity=0.5)) %>% 
+#   setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+#   addCircleMarkers(
+#     lat = crime_coord$lat,
+#     lng = crime_coord$lon,
+#     clusterOptions = markerClusterOptions()
+#   )
 
-crime_spatial <- st_transform(crime_spatial, 27700)
-sf_crime_spatial_coords <- matrix(unlist(crime_spatial$geometry), ncol = 2, byrow = T)
-crime_ppp <- ppp(x = sf_crime_spatial_coords[,1], y = sf_crime_spatial_coords[,2],
-                   window = window, check = T)
+leaflet() %>%
+  addTiles() %>%
+  addProviderTiles("Esri.WorldImagery", 
+                   options = providerTileOptions(opacity=0.5)) %>% 
+  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  addCircleMarkers(
+    lat = crime_coord$lat,
+    lng = crime_coord$lon
+  )
 ```
 
+### Visualising crime locations compared to housing prices
 
 ```{r}
-library(spatstat)
-disc10 <- disc(radius = 10)
+getColor <- function(housing_data) {
+  sapply(housing_data$price, function(price) {
+    if(price < quantile(housing_data$price, probs = 0.3)) {
+      "green"
+    } else if(price > quantile(housing_data$price, probs = 0.3) & price < quantile(housing_data$price, probs = 0.6)) {
+      "orange"
+    } else {
+      "red"
+    } })
+}
 
-# p_poisson 
+price_icons <- awesomeIcons(
+  icon = 'ios-close',
+  iconColor = 'black',
+  library = 'ion',
+  markerColor = getColor(housing_data)
+)
 
-# Compute the rate as count divided by area
-lambda <- 300/area.owin(disc10)
+crime_icon <- makeIcon(
+  iconUrl = "https://img.freepik.com/free-icon/placeholder_318-220133.jpg?w=2000",
+  iconWidth = 38, iconHeight = 40,
+  iconAnchorX = 22, iconAnchorY = 94
+)
 
-# Create a point pattern object
-p_poisson <- rpoispp(lambda = lambda, win = disc10)
-plot(p_poisson)
+# use this if you want the datapoints to be clustered
+# leaflet() %>%
+#   addTiles() %>%
+#   addProviderTiles("Esri.WorldImagery", 
+#                    options = providerTileOptions(opacity=0.5)) %>% 
+#   setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+#   addMarkers(
+#     lat = crime_coord$lat,
+#     lng = crime_coord$lon,
+#     icon = crime_icon,
+#     clusterOptions = markerClusterOptions()
+#   ) %>%
+#   addAwesomeMarkers(housing_data$Longitude, housing_data$Latitude, icon = price_icons,
+#     clusterOptions = markerClusterOptions())
 
-# p_cluster and p_regular
+leaflet() %>%
+  addTiles() %>%
+  addProviderTiles("Esri.WorldImagery", 
+                   options = providerTileOptions(opacity=0.5)) %>% 
+  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  addMarkers(
+    lat = crime_coord$lat,
+    lng = crime_coord$lon,
+    icon = crime_icon
+  ) %>%
+  addAwesomeMarkers(housing_data$Longitude, housing_data$Latitude, icon = price_icons)
+```
+### Visualizing data occurences from both of the datasets
 
-# Generate clustered points from a Thomas process
-set.seed(123)
-p_cluster <- rThomas(kappa = 0.35, scale = 1, mu = 3, win = disc10)
-plot(p_cluster)
+```{r}
+# filtering for the cheap housings (bottom 20%)
+cheap_housing_data <- housing_data[housing_data$price < quantile(housing_data$price, probs = 0.3),]
 
-# Regular points from a Strauss process
-set.seed(123)
-p_regular <- rStrauss(beta = 2.9, gamma = 0.025, R = .5, W = disc10)
-plot(p_regular)
+cheap_housing_spatial <- st_as_sf(cheap_housing_data, coords = c("Longitude", "Latitude"), crs = 4326, agr = "constant")
+
+# visualizing
+map_housing <-  mapview(cheap_housing_spatial, map.types = "OpenStreetMap", 
+        col.regions = "#32612D",
+        color = "white",
+        legend = TRUE, 
+        layer.name = "Sold cheap houses in 2023",
+        homebutton = FALSE, lwd = 0.5) 
+
+map_crime <-  mapview(crime_spatial, 
+          map.types = "OpenStreetMap", 
+        col.regions = "#32612D", 
+        color = "white",
+        legend = TRUE, 
+        layer.name = "Crime locations from 2023-03",
+        homebutton = FALSE, lwd = 0.5)
+
+leafsync::sync(map_housing, map_crime)
 ```
 
+## Calculating nearest neighbour
 
+```{r}
+# creating three pricing groups
+for (i in 1:length(housing_data$price)) {
+  if(housing_data$price[i] < quantile(housing_data$price, probs = 0.3)) {
+      housing_data$price_category[i] <- "low"
+    } else if(housing_data$price[i] > quantile(housing_data$price, probs = 0.3) & housing_data$price[i] < quantile(housing_data$price, probs = 0.6)) {
+      housing_data$price_category[i] <- "medium"
+    } else {
+      housing_data$price_category[i] <- "high"
+    }
+}
+
+housing_low <- housing_data[housing_data$price_category == "low",]
+housing_med <- housing_data[housing_data$price_category == "medium",]
+housing_high <- housing_data[housing_data$price_category == "high",]
+
+#define the radius
+radius <- 10000  # Radius length
+
+# create the window
+window <- disc(radius = radius, centre = center)
+
+# visualize window
+leaflet() %>%
+  addTiles() %>%
+  addProviderTiles("Esri.WorldImagery", 
+                   options = providerTileOptions(opacity=0.5)) %>% 
+  setView(lng = center_point[1], lat = center_point[2], zoom = 12) %>% 
+  addMarkers(
+    lat = crime_coord$lat,
+    lng = crime_coord$lon,
+    icon = crime_icon
+  ) %>%
+  addAwesomeMarkers(housing_data$Longitude, housing_data$Latitude, icon = price_icons) %>%
+  addCircles(lng = center[1], lat = center[2], radius = radius) 
+
+# create ppp objects based on the window and house price categories
+crime_ppp <- ppp(x = crime_data$Longitude, y = crime_data$Latitude, window = window)
+lowprice_ppp <- ppp(x = housing_low$Longitude, y = housing_low$Latitude, window = window)
+medprice_ppp <- ppp(x = housing_med$Longitude, y = housing_med$Latitude, window = window)
+highprice_ppp <- ppp(x = housing_high$Longitude, y = housing_high$Latitude, window = window)
+
+# calculate neaarest neighbour
+nndistances_low <- nndist(lowprice_ppp, crime_ppp)
+nndistances_med <- nndist(medprice_ppp, crime_ppp)
+nndistances_high <- nndist(highprice_ppp, crime_ppp)
+
+# plot histograms
+hist(nndistances_low)
+hist(nndistances_med)
+hist(nndistances_high)
+
+# print mean distance
+print(paste('Mean distance to a drug crime scene with low house prices: ', mean(nndistances_low)))
+
+print(paste('Mean distance to a drug crime scene with medium house prices: ', mean(nndistances_med)))
+
+print(paste('Mean distance to a drug crime scene with high house prices: ',mean(nndistances_high)))
+```
+
+### Checking whether the spatial pattern of crimes is random
+
+```{r}
+qtest <- quadrat.test(crime_ppp)
+qtest
+
+plot(qtest)
+```
+
+### Testing the significance of the neighbour results
+
+```{r}
+# creating dataframe for the testing
+nndistances_low_df <- data.frame(
+  category = "low",
+  mean_dist = nndistances_low
+)
+
+nndistances_med_df <- data.frame(
+  category = "medium",
+  mean_dist = nndistances_med
+)
+
+nndistances_high_df <- data.frame(
+  category = "high",
+  mean_dist = nndistances_high
+)
+
+nndistances_df <- rbind(nndistances_low_df, nndistances_med_df, nndistances_high_df)
+
+# boxplot
+nndistances_df %>% 
+  mutate(category = factor(category, levels=c("low", "medium", "high"))) %>%
+  ggplot(aes(x=category, y=mean_dist)) + 
+    geom_boxplot(fill="slateblue", alpha=0.2) + 
+    xlab("Price Category") +
+    ylab("Mean Distance from Crime Scene") +
+    theme_light()
+
+# one-way anova
+one.way <- aov(mean_dist ~ category, data = nndistances_df)
+summary(one.way)
+```
