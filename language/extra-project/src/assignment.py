@@ -94,11 +94,11 @@ def loading():
     print("PREDICTION: ", np.argmax(pred))
 
 def main():
-    #data, X, y = prep_data()
-    #X_train, X_test, y_train, y_test = splitting_data(X, y)
-    #vectorizer, X_train_feats, X_test_feats = vectorizing(X_train, X_test)
-    #classifier, y_pred = classifying(X_train_feats, X_test_feats, y_train, y_test)
-    #saving(vectorizer, classifier)
+    data, X, y = prep_data()
+    X_train, X_test, y_train, y_test = splitting_data(X, y)
+    vectorizer, X_train_feats, X_test_feats = vectorizing(X_train, X_test)
+    classifier, y_pred = classifying(X_train_feats, X_test_feats, y_train, y_test)
+    saving(vectorizer, classifier)
     loading()
 
 if __name__ == '__main__':

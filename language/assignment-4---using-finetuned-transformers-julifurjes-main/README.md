@@ -5,7 +5,7 @@
 In this assignment, I have extracted information from the Fake or Real News dataset and performed emotion classification.
 NB: The dataset is not uploaded due to its size, but can be downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news).For this purpose, a HuggingFace model was used, called ```j-hartmann/emotion-english-distilroberta-base```, what you can read more about [here](https://huggingface.co/j-hartmann/emotion-english-distilroberta-base).
 
-Furthermore, only 1000 datapoints were used in the run, due to time efficiency issues. However, this can be easily changed by removing the indexing when defining the headlines and labels.
+NB: Only 1000 datapoints were used in the run, due to time efficiency issues. However, this can be easily changed by removing the indexing when defining the headlines and labels.
 
 ## File structure
 
@@ -21,12 +21,9 @@ Furthermore, only 1000 datapoints were used in the run, due to time efficiency i
 
 1. Clone this repository on your own device
 2. Open Terminal at this folder or type ```cd assignment-4---using-finetuned-transformers-julifurjes-main```
-3. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
-4. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
-
-## Notes
-
-Make sure that you have the data downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news) and located in a folder called ```data```.
+3. Make sure that you have the data downloaded from [here](https://www.kaggle.com/datasets/jillanisofttech/fake-or-real-news) and located in a folder called ```data```
+4. Run ```bash setup.sh``` in the terminal at this folder to install the requirements and virtual environment
+5. Run ```bash run.sh``` to run the script itself, in the previously created virtual environment
 
 ## Results
 
